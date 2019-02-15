@@ -1,13 +1,14 @@
+#include "pch.h"
 #include "Window.h"
+#include "glad/glad.h"
 #include "SDL_opengl.h"
-#include <iostream>
 
 
 
 Window::Window(int ScreenWidth, int ScreenHeight)
 	:m_ScreenWidth(ScreenWidth),m_ScreenHeight(ScreenHeight)
 {
-
+	Init();
 }
 
 
@@ -16,8 +17,13 @@ Window::~Window()
 }
 
 bool Window::Init() {
+
+	Log::Init();
+
+
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		std::cout << "SDL could not be initialized! SDL error : " << SDL_GetError() << std::endl;
+		std::string info = SDL_GetError();
+		ERROR("SDL could not be initialized! SDL error : " + info);
 		return false;
 	}
 
@@ -29,10 +35,25 @@ bool Window::Init() {
 	// Create Window
 	window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_ScreenWidth, m_ScreenHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	if (window == NULL) {
-		printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+		std::string info = SDL_GetError();
+		ERROR("Window could not be created! SDL_Error: %s\n" + info);
 		return false;
 	}
 
+	//Create context
+	gContext = SDL_GL_CreateContext(window);
+	if (gContext == NULL)
+	{
+		printf("OpenGL context could not be created! SDL Error: %s\n", SDL_GetError());
+		return false;
+	}
 
+	// Initialize glad
+	int version = gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
+	if (version == 0)
+	{
+		std::cout << "Failed to initialize OpenGL context" << std::endl;
+		return false;
+	}
 	return true;
 }

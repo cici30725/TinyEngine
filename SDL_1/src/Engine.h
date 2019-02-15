@@ -4,21 +4,23 @@
 #include "glad/glad.h"
 #include "Graphics/Renderer.h"
 #include "Graphics/Shader.h"
+#include "Cameras/Camera.h"
+#include "Timer.h"
+#include "Inputs/InputHandle.h"
+
 
 class Engine
 {
 public:
-	Engine();
+	Engine(const int ScreenWidth , const int ScreemHeight);
 	~Engine();
-	void ConstructWindow(int ScreenWidth = 640, int ScreenHeight = 480);
 	void Start();
 private:
-	Window* m_Window = NULL;
-	SDL_GLContext gContext = NULL;
+	Window m_Window;
 	Renderer renderer;
-	Shader shader;
+	Timer m_Timer;
+	InputHandle m_InputHandle;
 private:
-	bool Init();
 	void Close();
 	void OnUserCreate();
 };

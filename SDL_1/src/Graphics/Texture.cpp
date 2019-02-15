@@ -1,6 +1,7 @@
+#include "pch.h"
 #include "Texture.h"
 #include "stb_image.h"
-#include <iostream>
+
 
 
 
@@ -25,7 +26,7 @@ Texture::Texture(const std::string& filepath)
 	}
 	else
 	{
-		std::cout << "Failed to load texture" << std::endl;
+		ERROR("Failed to load texture");
 	}
 	stbi_image_free(data);
 }

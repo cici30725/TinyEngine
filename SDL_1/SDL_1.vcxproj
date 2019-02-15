@@ -19,24 +19,55 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Inputs\InputHandle.cpp" />
+    <ClCompile Include="src\Cameras\CameraFPS.cpp" />
+    <ClCompile Include="src\Cameras\Camera.cpp" />
+    <ClCompile Include="src\Inputs\KeyboardManager.cpp" />
+    <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\Graphics\Shader.cpp" />
     <ClCompile Include="src\Graphics\Mesh.cpp" />
     <ClCompile Include="src\Graphics\Entity.cpp" />
     <ClCompile Include="src\Graphics\Renderer.cpp" />
     <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\Source.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\Graphics\Texture.cpp" />
-    <ClCompile Include="vendor\stb_image\stb_image.cpp" />
+    <ClCompile Include="src\Graphics\Transformation.cpp" />
+    <ClCompile Include="src\Timer.cpp" />
+    <ClCompile Include="vendor\stb_image\stb_image.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Events\Event.h" />
+    <ClInclude Include="src\Events\KeyEvent.h" />
+    <ClInclude Include="src\Events\MouseEvent.h" />
+    <ClInclude Include="src\Inputs\InputHandle.h" />
+    <ClInclude Include="src\Cameras\CameraFPS.h" />
+    <ClInclude Include="src\Cameras\Camera.h" />
+    <ClInclude Include="src\Inputs\KeyboardManager.h" />
+    <ClInclude Include="src\Inputs\Observer.h" />
+    <ClInclude Include="src\Inputs\Subject.h" />
+    <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\Graphics\Shader.h" />
     <ClInclude Include="src\Graphics\Mesh.h" />
     <ClInclude Include="src\Graphics\Entity.h" />
     <ClInclude Include="src\Graphics\Renderer.h" />
     <ClInclude Include="src\Engine.h" />
+    <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\Graphics\Texture.h" />
+    <ClInclude Include="src\Graphics\Transformation.h" />
+    <ClInclude Include="src\Timer.h" />
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
@@ -123,7 +154,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>vendor/SDL2/include;vendor/glad/include;SDL_1/src;vendor/stb_image</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor/glm/glm;vendor/spdlog/include;vendor/SDL2/include;vendor/glad/include;src;vendor/stb_image</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>vendor/SDL2/lib/x64</AdditionalLibraryDirectories>
@@ -137,7 +170,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>vendor/SDL2/include;vendor/glad/include;SDL_1/src;vendor/stb_image</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor/glm/glm;vendor/spdlog/include;vendor/SDL2/include;vendor/glad/include;src;vendor/stb_image</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>vendor/SDL2/lib/x64</AdditionalLibraryDirectories>
@@ -153,7 +188,9 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>vendor/SDL2/include;vendor/glad/include;SDL_1/src;vendor/stb_image</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor/glm/glm;vendor/spdlog/include;vendor/SDL2/include;vendor/glad/include;src;vendor/stb_image</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -171,7 +208,9 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>vendor/SDL2/include;vendor/glad/include;SDL_1/src;vendor/stb_image</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>vendor/glm/glm;vendor/spdlog/include;vendor/SDL2/include;vendor/glad/include;src;vendor/stb_image</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

@@ -1,8 +1,14 @@
+#include "pch.h"
 #include "Engine.h"
-#include <iostream>
 
-Engine::Engine()
+
+Engine::Engine(const int ScreenWidth, const int ScreenHeight)
+	:m_Window(ScreenWidth, ScreenHeight)
+	,renderer(ScreenWidth, ScreenHeight)
+	,m_Timer()
+	,m_InputHandle(&(renderer.GetCamera()))
 {
+
 }
 
 
@@ -10,38 +16,56 @@ Engine::~Engine()
 {
 }
 
-void Engine::ConstructWindow(int ScreenWidth, int ScreenHeight) {
-	// Create Window
-	m_Window = new Window(ScreenWidth, ScreenHeight);
-	m_Window->Init();
-
-	Init();
-}
 
 void Engine::Start() {
-	SDL_Event eventHandler;
+	SDL_Event event;
 	bool quit = false;
 
 	// Pre game loop user definitions
 	OnUserCreate();
 
+	// Init Timer
+	m_Timer.Init();
 	while (!quit) {
-		while (SDL_PollEvent(&eventHandler) != 0)
+		while (SDL_PollEvent(&event) != 0)
 		{
-			//User requests quit
-			if (eventHandler.type == SDL_QUIT)
-			{
+			if (event.type == SDL_QUIT)
 				quit = true;
+			else {
+				// Pass event to input handle
+				m_InputHandle.HandleEvent(event);
 			}
+				
+			/*switch (event.type) {
+			
+			case SDL_QUIT:
+				quit = true;
+				break;
+			case SDL_KEYDOWN:
+				switch (event.key.keysym.sym) {
+				case SDLK_w:
+					renderer.GetCamera().update(Camera::CameraMovement::KEY_W, m_Timer.GetElapsedTime());
+					break;
+				case SDLK_a:
+					renderer.GetCamera().update(Camera::CameraMovement::KEY_A, m_Timer.GetElapsedTime());
+					break;
+				case SDLK_s:
+					renderer.GetCamera().update(Camera::CameraMovement::KEY_S, m_Timer.GetElapsedTime());
+					break;
+				case SDLK_d:
+					renderer.GetCamera().update(Camera::CameraMovement::KEY_D, m_Timer.GetElapsedTime());
+					break;
+			}*/
+			
 		}
 
 		// render
-		glUseProgram(shader.GetProgram());
-		renderer.Render();
+		//glUseProgram(shader.GetProgram());
+		renderer.Render(m_Timer.GetElapsedTime());
 
 
 		// Update Screen
-		SDL_GL_SwapWindow(&m_Window->GetWindow());
+		SDL_GL_SwapWindow(&m_Window.GetWindow());
 	};
 
 	Close();
@@ -49,36 +73,15 @@ void Engine::Start() {
 
 void Engine::OnUserCreate() {
 	// Create Shader
-	shader.Init("res/shader/shader.shader");
+	//shader.Init("res/shader/shader.shader");
+	renderer.Init();
 
 	// Create Renderer and add objects
 	renderer.addEntity(new Entity());
 }
 
-bool Engine::Init() {
-	//Create context
-	SDL_Window& window = m_Window->GetWindow();
-	gContext = SDL_GL_CreateContext(&window);
-	if (gContext == NULL)
-	{
-		printf("OpenGL context could not be created! SDL Error: %s\n", SDL_GetError());
-		return false;
-	}
-
-	// Initialize glad
-	int version = gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
-	if (version == 0)
-	{
-		std::cout << "Failed to initialize OpenGL context" << std::endl;
-		return false;
-	}
-
-
-	return true;
-}
-
 
 void Engine::Close() {
-	SDL_DestroyWindow(&m_Window->GetWindow());
+	SDL_DestroyWindow(&m_Window.GetWindow());
 	SDL_Quit();
 }

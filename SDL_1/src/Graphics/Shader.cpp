@@ -1,25 +1,20 @@
+#include "pch.h"
 #include "Shader.h"
-#include <fstream>
-#include <sstream>
-#include <iostream>
+#include <gtc/type_ptr.hpp>
 
 
-Shader::Shader()
+Shader::Shader(const std::string& filepath)
 {
-
-}
-
-
-Shader::~Shader()
-{
-}
-
-void Shader::Init(const std::string& filepath) {
 	// Parse shader
 	ShaderProgramSource source = ParseShader(filepath);
 
 	// Compile shader
 	CompileShader(source.vertexShader, source.fragmentShader);
+}
+
+
+Shader::~Shader()
+{
 }
 
 void Shader::CompileShader(const std::string& vertexPath, const std::string& fragPath) {
@@ -34,7 +29,8 @@ void Shader::CompileShader(const std::string& vertexPath, const std::string& fra
 	if (!success)
 	{
 		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+		std::string info = infoLog;
+		ERROR("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" + info);
 	}
 	// fragment shader
 	int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -46,7 +42,8 @@ void Shader::CompileShader(const std::string& vertexPath, const std::string& fra
 	if (!success)
 	{
 		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+		std::string info = infoLog;
+		ERROR("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" + info);
 	}
 	// link shaders
 	shaderProgram = glCreateProgram();
@@ -57,7 +54,8 @@ void Shader::CompileShader(const std::string& vertexPath, const std::string& fra
 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
 	if (!success) {
 		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+		std::string info = infoLog;
+		ERROR("ERROR::SHADER::PROGRAM::LINKING_FAILED\n" + info);
 	}
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
@@ -84,8 +82,6 @@ Shader::ShaderProgramSource Shader::ParseShader(const std::string& filepath) {
 				type = ShaderType::FRAGMENT;
 		}
 		else {
-			if ((int)type == -1)
-				std::cout << "error";
 			ss[(int)type] << line << '\n';
 		}
 	}
@@ -104,4 +100,10 @@ void Shader::SetUniform1i(int x, const char* name) {
 	GLint location = glGetUniformLocation(shaderProgram, name);
 	glUseProgram(shaderProgram);
 	glUniform1i(location, x);
+}
+
+void Shader::SetUniformMat4f(glm::mat4& matrix, const char* name) {
+	GLint location = glGetUniformLocation(shaderProgram, name);
+	glUseProgram(shaderProgram);
+	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }

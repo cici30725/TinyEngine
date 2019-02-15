@@ -1,10 +1,9 @@
+#include "pch.h"
 #include "SDL.h"
 #include "Engine.h"
-#include <iostream>
 
 int main(int argc, char *argv[]) {
-	Engine demo;
-	demo.ConstructWindow();
+	Engine demo(640, 480);
 	demo.Start();
 	return 0;
 }

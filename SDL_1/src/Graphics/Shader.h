@@ -1,18 +1,19 @@
 #pragma once
 #include "glad/glad.h"
+#include "glm.hpp"
 #include <string>
 
 class Shader
 {
 public:
-	Shader();
+	Shader(const std::string& filepath);
 	~Shader();
-	void Init(const std::string& filepath);
 	const GLuint& GetProgram() { return shaderProgram; }
 
 public:
 	void SetUniform2f(float, float, const char*);
 	void SetUniform1i(int, const char*);
+	void SetUniformMat4f(glm::mat4& , const char*);
 
 private:
 	GLuint shaderProgram = NULL;
