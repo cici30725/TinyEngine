@@ -3,7 +3,7 @@
 
 class Observer {
 public:
-	virtual void OnNotify(Event* event) = 0;
+	virtual void OnNotify(Event& event) = 0;
 protected:
 	Observer(){}
 };

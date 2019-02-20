@@ -3,7 +3,6 @@
 
 
 InputHandle::InputHandle(Observer* observer)
-	:m_Keyboard(observer)
 {
 }
 
@@ -12,14 +11,23 @@ InputHandle::~InputHandle()
 {
 }
 
-void InputHandle::HandleEvent(SDL_Event& event)
+void InputHandle::HandleEvent(const SDL_Event& event)
 {
 	switch (event.type) {
 	case SDL_KEYDOWN:
-		KeyPressedEvent* k = new KeyPressedEvent(event.key.keysym.sym);
-		m_Keyboard.Notify(k); // the parameter is the keycode
-		delete k;
+		Notify(EventTypes::KeyPressedEvent, KeyPressedEvent(event.key.keysym.sym));
 		break;
+	case SDL_MOUSEMOTION:
+		Notify(EventTypes::MouseMovementEvent, MouseMovementEvent(event.motion.x, event.motion.y, event.motion.xrel, event.motion.yrel));
+		break;
+	}
+
+}
+
+void InputHandle::Notify(EventTypes type, Event&& event) {
+	auto& vec = m_Observers[type];
+	for (auto observer : vec) {
+		observer->OnNotify(event);
 	}
 }
 

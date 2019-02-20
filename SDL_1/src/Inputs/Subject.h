@@ -19,7 +19,7 @@ public:
 		}
 	}
 	
-	virtual void Notify(Event* event) = 0;
+	virtual void Notify(EventTypes type, Event&& event) = 0;
 protected:
 	Subject(){}
 	std::map<EventTypes, std::vector<Observer*>> m_Observers;

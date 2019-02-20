@@ -3,6 +3,7 @@
 #include "gtc/matrix_transform.hpp"
 #include "Inputs/Observer.h"
 #include "Events/KeyEvent.h"
+#include "Events/MouseEvent.h"
 
 class Camera : public Observer
 {
@@ -11,7 +12,8 @@ public:
 	enum class CameraMovement {
 		KEY_W, KEY_A, KEY_S, KEY_D
 	};
-	virtual void OnKeyUpdate(KeyPressedEvent* event) = 0;
+	virtual void OnKeyUpdate(KeyPressedEvent&& event) = 0;
+	virtual void OnMouseMovementUpdate(MouseMovementEvent&& event) = 0;
 	glm::mat4& GetViewMatrix();
 	inline float GetFOV() const { return m_FovDegree; }
 protected:

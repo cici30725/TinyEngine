@@ -7,6 +7,7 @@
 #include "Cameras/Camera.h"
 #include "Timer.h"
 #include "Inputs/InputHandle.h"
+#include "Input.h"
 
 
 class Engine

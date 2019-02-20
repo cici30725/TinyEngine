@@ -21,42 +21,27 @@ void Engine::Start() {
 	SDL_Event event;
 	bool quit = false;
 
+	SDL_SetRelativeMouseMode(SDL_TRUE);
+
 	// Pre game loop user definitions
 	OnUserCreate();
 
 	// Init Timer
 	m_Timer.Init();
 	while (!quit) {
+
 		while (SDL_PollEvent(&event) != 0)
 		{
 			if (event.type == SDL_QUIT)
+				quit = true;
+			else if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
 				quit = true;
 			else {
 				// Pass event to input handle
 				m_InputHandle.HandleEvent(event);
 			}
 				
-			/*switch (event.type) {
-			
-			case SDL_QUIT:
-				quit = true;
-				break;
-			case SDL_KEYDOWN:
-				switch (event.key.keysym.sym) {
-				case SDLK_w:
-					renderer.GetCamera().update(Camera::CameraMovement::KEY_W, m_Timer.GetElapsedTime());
-					break;
-				case SDLK_a:
-					renderer.GetCamera().update(Camera::CameraMovement::KEY_A, m_Timer.GetElapsedTime());
-					break;
-				case SDLK_s:
-					renderer.GetCamera().update(Camera::CameraMovement::KEY_S, m_Timer.GetElapsedTime());
-					break;
-				case SDLK_d:
-					renderer.GetCamera().update(Camera::CameraMovement::KEY_D, m_Timer.GetElapsedTime());
-					break;
-			}*/
-			
+		
 		}
 
 		// render
@@ -72,6 +57,9 @@ void Engine::Start() {
 }
 
 void Engine::OnUserCreate() {
+	m_InputHandle.addObserver(EventTypes::KeyPressedEvent, &(renderer.GetCamera()));
+	m_InputHandle.addObserver(EventTypes::MouseMovementEvent, &(renderer.GetCamera()));
+
 	// Create Shader
 	//shader.Init("res/shader/shader.shader");
 	renderer.Init();

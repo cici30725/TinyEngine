@@ -2,7 +2,7 @@
 #include "SDL.h"
 
 enum class EventTypes {
-	MouseMoveEvent, MouseButtonCLickedEvent, KeyPressedEvent, KeyReleasedEvent
+	MouseMovementEvent, MouseButtonCLickedEvent, KeyPressedEvent, KeyReleasedEvent
 };
 
 class Event {
