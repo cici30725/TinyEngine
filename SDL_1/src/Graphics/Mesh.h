@@ -1,34 +1,31 @@
 #pragma once
 #include "glad/glad.h"
+#include "glm.hpp"
+#include <vector>
+
+
+struct Vertex {
+	glm::vec3 Position;
+	glm::vec3 Normal;
+	glm::vec2 TextureCoord;
+};
 
 class Mesh
 {
 public:
-	Mesh();
+	Mesh(std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices);
 	~Mesh();
-	void Init();
-	void Bind();
+	void Draw();
 private:
-	float vertices[12] = {
-		 0.5f,  0.5f, 0.0f,  // top right
-		 0.5f, -0.5f, 0.0f,  // bottom right
-		-0.5f, -0.5f, 0.0f,  // bottom left
-		-0.5f,  0.5f, 0.0f   // top left 
-	};
-	unsigned int indices[6] = {  // note that we start from 0!
-		0, 1, 3,  // first Triangle
-		1, 2, 3   // second Triangle
-	};
-
-	float texture_coor[8] = {
-		1.0f, 1.0f,
-		1.0f, 0.0f,
-		0.0f, 0.0f,
-		0.0f, 1.0f
-	};
-	
+	// Data
+	std::vector<Vertex> vec_Verticies;
+	std::vector<unsigned int> vec_Indices;
+	// * Texture not supported yet
 	GLuint VBO, VAO, EBO;
 	GLuint TexVBO;
+
+	// Function
+	void SetupMesh();
 
 };
 

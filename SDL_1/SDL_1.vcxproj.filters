@@ -87,6 +87,7 @@
     <ClInclude Include="src\Input.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\Terrain\Terrain.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Cameras\Camera.cpp">
@@ -140,5 +141,9 @@
     <ClCompile Include="src\Input.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Terrain\Terrain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\heightmap\heightmap.png" />
   </ItemGroup>
 </Project>

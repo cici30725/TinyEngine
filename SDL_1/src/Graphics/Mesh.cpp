@@ -2,8 +2,11 @@
 #include "Mesh.h"
 
 
-Mesh::Mesh()
+Mesh::Mesh(std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices)
+	:vec_Verticies(std::move(vertices))
+	,vec_Indices(std::move(indices))
 {
+	SetupMesh();
 }
 
 
@@ -11,7 +14,7 @@ Mesh::~Mesh()
 {
 }
 
-void Mesh::Init() {
+void Mesh::SetupMesh() {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
@@ -19,21 +22,22 @@ void Mesh::Init() {
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vec_Verticies.size(), &vec_Verticies[0], GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * vec_Indices.size(), &vec_Indices[0], GL_STATIC_DRAW);
 
 	// Position
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+
+	// Normal
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
 
 	// Texture Coordinates
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(texture_coor), texture_coor, GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TextureCoord));
 
 	// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -47,6 +51,8 @@ void Mesh::Init() {
 
 }
 
-void Mesh::Bind() {
+void Mesh::Draw() {
 	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, vec_Indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
 }

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Engine.h"
+#include "Terrain/Terrain.h"
 
 
 Engine::Engine(const int ScreenWidth, const int ScreenHeight)
@@ -28,6 +29,10 @@ void Engine::Start() {
 
 	// Init Timer
 	m_Timer.Init();
+
+	// WireFrame mode
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 	while (!quit) {
 
 		while (SDL_PollEvent(&event) != 0)
@@ -60,12 +65,14 @@ void Engine::OnUserCreate() {
 	m_InputHandle.addObserver(EventTypes::KeyPressedEvent, &(renderer.GetCamera()));
 	m_InputHandle.addObserver(EventTypes::MouseMovementEvent, &(renderer.GetCamera()));
 
+	//Terrain t("res/heightmap/heightmap.png");
+
 	// Create Shader
 	//shader.Init("res/shader/shader.shader");
 	renderer.Init();
 
 	// Create Renderer and add objects
-	renderer.addEntity(new Entity());
+	renderer.addEntity(new Entity("res/model/source/scene.fbx"));
 }
 
 
