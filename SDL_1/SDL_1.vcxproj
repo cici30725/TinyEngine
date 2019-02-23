@@ -108,7 +108,6 @@
     <ClInclude Include="src\Graphics\Mesh.h" />
     <ClInclude Include="src\Graphics\Renderer.h" />
     <ClInclude Include="src\Graphics\Shader.h" />
-    <ClInclude Include="src\Graphics\Texture.h" />
     <ClInclude Include="src\Graphics\Transformation.h" />
     <ClInclude Include="src\Inputs\InputHandle.h" />
     <ClInclude Include="src\Inputs\Observer.h" />
@@ -129,7 +128,6 @@
     <ClCompile Include="src\Graphics\Mesh.cpp" />
     <ClCompile Include="src\Graphics\Renderer.cpp" />
     <ClCompile Include="src\Graphics\Shader.cpp" />
-    <ClCompile Include="src\Graphics\Texture.cpp" />
     <ClCompile Include="src\Graphics\Transformation.cpp" />
     <ClCompile Include="src\Inputs\InputHandle.cpp" />
     <ClCompile Include="src\Log.cpp" />
@@ -152,6 +150,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\heightmap\heightmap.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shader\shader.shader" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

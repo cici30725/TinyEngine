@@ -27,14 +27,14 @@ void Renderer::addEntity(Entity* entity) {
 
 void Renderer::Render(float fElapsedTime) {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glm::mat4 view = m_CameraFPS->GetViewMatrix();
-	glm::mat4 PV = m_Projection * view;
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glUseProgram(m_Shader.GetProgram());
+	glm::mat4 view = m_CameraFPS->GetViewMatrix();
+	glm::mat4 PV = m_Projection * view;
 	for (Entity* entity : entityList) {
 		OnEntityUpdate(*entity, PV);
-		entity->Render();
+		entity->Render(m_Shader);
 	}
 }
 

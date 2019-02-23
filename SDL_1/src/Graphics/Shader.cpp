@@ -98,6 +98,8 @@ void Shader::SetUniform2f(float x, float y, const char* name) {
 
 void Shader::SetUniform1i(int x, const char* name) {
 	GLint location = glGetUniformLocation(shaderProgram, name);
+	/*if (location == -1)
+		TRACE("Uniform " + std::string(name) + " location not found");*/
 	glUseProgram(shaderProgram);
 	glUniform1i(location, x);
 }

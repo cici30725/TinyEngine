@@ -31,7 +31,8 @@ void Engine::Start() {
 	m_Timer.Init();
 
 	// WireFrame mode
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glEnable(GL_DEPTH_TEST);
 
 	while (!quit) {
 
@@ -72,7 +73,7 @@ void Engine::OnUserCreate() {
 	renderer.Init();
 
 	// Create Renderer and add objects
-	renderer.addEntity(new Entity("res/model/source/scene.fbx"));
+	renderer.addEntity(new Entity("res/model/astro/nanosuit.obj"));
 }
 
 

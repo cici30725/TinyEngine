@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Entity.h"
+#include "stb_image.h"
 
 
 
@@ -8,6 +9,7 @@ Entity::Entity(const std::string& filepath)
 	LoadModel(filepath);
 	m_Transformation = new Transformation();
 	//m_Transformation->SetRotation(90.0f, 0.0f, 0.0f, 1.0f);
+	m_Transformation->SetScale(0.2f, 0.2f, 0.2f);
 }
 
 
@@ -25,9 +27,9 @@ void Entity::LoadModel(const std::string& filepath) {
 		return;
 	}
 
+	directory = filepath.substr(0, filepath.find_last_of('/'));
+
 	ProcessNode(scene->mRootNode, scene);
-
-
 }
 
 void Entity::ProcessNode(aiNode* node, const aiScene* scene) {
@@ -44,7 +46,9 @@ void Entity::ProcessNode(aiNode* node, const aiScene* scene) {
 Mesh Entity::ProcessMesh(aiMesh* mesh, const aiScene* scene) {
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
+	std::vector<Texture> textures;
 
+	// Process Verticies
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
 		Vertex v;
 		v.Position.x = mesh->mVertices[i].x;
@@ -65,6 +69,8 @@ Mesh Entity::ProcessMesh(aiMesh* mesh, const aiScene* scene) {
 		vertices.emplace_back(std::move(v));
 	}
 
+
+	// Process Indicies
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 	{
 		aiFace face = mesh->mFaces[i];
@@ -72,14 +78,95 @@ Mesh Entity::ProcessMesh(aiMesh* mesh, const aiScene* scene) {
 			indices.emplace_back(face.mIndices[j]);
 	}
 
-	// *Material not supproted Yet
+	// Process Material
+	if (mesh->mMaterialIndex >= 0) {
+		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+		std::vector<Texture> diffuseMaps = loadMaterialTextures(material,
+			aiTextureType_DIFFUSE, "texture_diffuse");
+		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+		std::vector<Texture> specularMaps = loadMaterialTextures(material,
+			aiTextureType_SPECULAR, "texture_specular");
+		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
-	return Mesh(std::move(vertices), std::move(indices));
+	}
+
+	return Mesh(std::move(vertices), std::move(indices), std::move(textures));
 }
 
-void Entity::Render() {
-	glm::mat4 modelMatrix = m_Transformation->GetModelMatrix();
+
+std::vector<Texture> Entity::loadMaterialTextures(aiMaterial* material, aiTextureType type, const std::string& typeName)
+{
+	std::vector<Texture> textures;
+	for (unsigned int i = 0; i < material->GetTextureCount(type); i++)
+	{
+		aiString str;
+		material->GetTexture(type, i, &str);
+		bool skip = false;
+		for (unsigned int j = 0; j < vec_TextureLoaded.size(); j++) {
+			if (std::strcmp(str.C_Str(), vec_TextureLoaded[j].path.data()) == 0) {
+				// texture loaded before
+				textures.emplace_back(vec_TextureLoaded[j]);
+				skip = true;
+				break;
+			}
+		}
+
+		if (!skip) {
+			Texture texture;
+			texture.id = TextureFromFile(str.C_Str(), directory);
+			texture.type = typeName;
+			texture.path = str.C_Str();
+
+			textures.emplace_back(texture);
+			vec_TextureLoaded.emplace_back(texture);
+		}
+	}
+	return textures;
+}
+
+unsigned int Entity::TextureFromFile(const char *path, const std::string& directory)
+{
+	std::string filename = std::string(path);
+	filename = directory + '/' + filename;
+
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+
+	int width, height, nrComponents;
+	unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
+	if (data)
+	{
+		TRACE("Loaded file " + filename);
+		GLenum format;
+		if (nrComponents == 1)
+			format = GL_RED;
+		else if (nrComponents == 3)
+			format = GL_RGB;
+		else if (nrComponents == 4)
+			format = GL_RGBA;
+
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		stbi_image_free(data);
+	}
+	else
+	{
+		std::cout << "Texture failed to load at path: " << path << std::endl;
+		stbi_image_free(data);
+	}
+
+	return textureID;
+}
+
+void Entity::Render(Shader& shader) {
 	for (auto& mesh : vec_Meshes) {
-		mesh.Draw();
+		mesh.Draw(shader);
 	}
 }

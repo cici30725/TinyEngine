@@ -2,9 +2,10 @@
 #include "Mesh.h"
 
 
-Mesh::Mesh(std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices)
+Mesh::Mesh(std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, std::vector<Texture>&& textures)
 	:vec_Verticies(std::move(vertices))
 	,vec_Indices(std::move(indices))
+	,vec_Textures(std::move(textures))
 {
 	SetupMesh();
 }
@@ -51,7 +52,26 @@ void Mesh::SetupMesh() {
 
 }
 
-void Mesh::Draw() {
+void Mesh::Draw(Shader& shader) {
+	int diffuseCount = 1;
+	int specularCount = 1;
+	for (unsigned int i = 0; i < vec_Textures.size(); i++) {
+		glActiveTexture(GL_TEXTURE0 + i);	// Activate texture unit before binding
+
+		std::string number;
+		std::string name = vec_Textures[i].type;
+		if (name == "texture_diffuse")
+			number = std::to_string(diffuseCount++);
+		else if (name == "texture_specular")
+			number = std::to_string(specularCount++);
+
+		glBindTexture(GL_TEXTURE_2D, vec_Textures[i].id);	// Bind Texture
+		shader.SetUniform1i(i, ("material." + name + number).c_str());	// Assign the number of the texture unit to the uniform
+		//glBindTexture(GL_TEXTURE_2D, vec_Textures[i].id);	// Bind Texture
+	}
+	glActiveTexture(GL_TEXTURE0);	// Unbind it to default
+
+	// Draw mesh
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, vec_Indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);

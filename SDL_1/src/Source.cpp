@@ -3,7 +3,7 @@
 #include "Engine.h"
 
 int main(int argc, char *argv[]) {
-	Engine demo(640, 480);
+	Engine demo(1280, 800);
 	demo.Start();
 	return 0;
 }
